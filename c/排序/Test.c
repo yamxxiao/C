@@ -484,10 +484,63 @@ int quickSort2(int* arr, int left, int right)
 //	}
 //}
 
-//归并排序
-void _megmceSort()
-{
 
+//归并排序辅助函数
+void _mergeSort(int *arr,int *temp,int begin,int end)
+{
+	if (begin >= end)
+	{
+		return;
+	}
+	//先找中间值
+	int mind = (begin + end) / 2;
+
+	_mergeSort(arr, temp, begin, mind);
+	_mergeSort(arr, temp, mind + 1, end);
+	//此时通过递归，两边区间的顺序已经排好了
+	
+	//归并
+	int begin1 = begin, end1 = mind;
+	int begin2 = mind + 1, end2 = end;
+	int i = begin;//用于temp的下标
+
+	while (begin1 <= end1&& begin2 <= end2)
+	{
+		if (arr[begin1] < arr[begin2])
+		{
+			temp[i++] = arr[begin1++];
+		}
+		else
+		{
+			temp[i++] = arr[begin2++];
+		}
+	}
+
+	while (begin1 <= end1)
+	{
+		temp[i++] = arr[begin1++];
+	}
+
+	while (begin2 <= end2)
+	{
+		temp[i++] = arr[begin2++];
+	}
+
+	memcpy(arr+begin, temp+begin , (end - begin + 1) * sizeof(int));
+}
+//归并排序
+void mergeSort(int* arr, int n)
+{
+	int* temp = (int*)malloc(sizeof(int) * n);
+	if (temp == NULL)
+	{
+		printf("fail!");
+		return;
+	}
+
+	_mergeSort(arr, temp, 0, n - 1);
+	free(temp);
+	temp = NULL;
 }
 
 int main()
@@ -504,8 +557,9 @@ int main()
 	/*SelectSort_shuang(arr, n);*/
 	/*QQQquickSort(arr, 0,n - 1);
 	/*PrintSort(arr, n);*/
-	_simpleQuickSort(arr, 0, n - 1);
+	/*_simpleQuickSort(arr, 0, n - 1);*/
 	/*InsertSort(arr,n);*/
+	mergeSort(arr, n);
 	PrintSort(arr,n);
 
 	return 0;
