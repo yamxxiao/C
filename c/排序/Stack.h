@@ -3,6 +3,7 @@
 #include"stdlib.h"
 #include"stdbool.h"
 #include"assert.h"
+#include"string.h"
 
 typedef int SLTDataType;
 typedef struct Stack

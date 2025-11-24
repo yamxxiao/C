@@ -1,5 +1,4 @@
 #include"Stack.h"
-
 //插入排序
 void InsertSort(int* arr, int n)
 {
@@ -124,10 +123,11 @@ void ShellSort(int* arr, int size)
 		gap = gap / 3 + 1;
 
 		//单层循环处理所用分组
-		for (int i = gap; i < size; i++)
+		for (int i = 0; i < size; i++)
 		{
-			int temp = arr[i];
-			int end = i - gap;
+			int temp = arr[i + gap];
+		
+			int end = i ;
 
 			//在当前分组内进行插入排序
 
@@ -252,34 +252,34 @@ void _simpleQuickSort(int* arr, int left, int right)
 
 }
 
-//三数取中1
-int medianOfThree(int* arr, int left, int right)
-{
-	int mind = left + (right - left) / 2;
-	//确保arr[left]<arr[mind]<arr[right]
-	if (arr[left] > arr[mind])
-	{
-		Swap(&arr[left], &arr[mind]);
-	}
-	if (arr[left] > arr[right])
-	{
-		Swap(&arr[left], &arr[right]);
-	}
-	if (arr[mind] > arr[right])
-	{
-		Swap(&arr[mind], &arr[right]);
-	}
-
-	//将中值放入right-1的位置作为基准
-	Swap(&arr[mind], &arr[right - 1]);
-
-	return arr[right - 1];
-}
+////三数取中1
+//int medianOfThree(int* arr, int left, int right)
+//{
+//	int mind = left + (right - left) / 2;
+//	//确保arr[left]<arr[mind]<arr[right]
+//	if (arr[left] > arr[mind])
+//	{
+//		Swap(&arr[left], &arr[mind]);
+//	}
+//	if (arr[left] > arr[right])
+//	{
+//		Swap(&arr[left], &arr[right]);
+//	}
+//	if (arr[mind] > arr[right])
+//	{
+//		Swap(&arr[mind], &arr[right]);
+//	}
+//
+//	//将中值放入right-1的位置作为基准
+//	Swap(&arr[mind], &arr[right - 1]);
+//
+//	return arr[right - 1];
+//}
 
 //三数取中2
 int Getmind(int* arr, int left, int right)
 {
-	int mind = (left + right) / 2;
+	int mind = (left + right) / 2;//left+(right-left)/2
 
 	if (arr[left] < arr[mind])
 	{
@@ -312,37 +312,37 @@ int Getmind(int* arr, int left, int right)
 		}
 	}
 }
-//分区函数
-int partition(int* arr, int left, int right)
-{
-	//使用三数取中法，选择基准
-	int pivot = medianOfThree(arr, left, right);
-
-	int i = left;
-	int j = right - 1;
-
-	while (1)
-	{
-		//从左边向右找大于等于基准的元素
-		while (arr[i++] < pivot);
-
-		//从右向左找等于小于基准的元素
-		while (arr[j--] > pivot);
-
-		if (i < j)
-		{
-			Swap(&arr[i], &arr[j]);
-		}
-		else
-		{
-			break;
-		}
-	}
-
-	//将基准放到正确的位置
-	Swap(&arr[i], &arr[right - 1]);
-	return i;
-}
+////分区函数
+//int partition(int* arr, int left, int right)
+//{
+//	//使用三数取中法，选择基准
+//	int pivot = medianOfThree(arr, left, right);
+//
+//	int i = left;
+//	int j = right - 1;
+//
+//	while (1)
+//	{
+//		//从左边向右找大于等于基准的元素
+//		while (arr[i++] < pivot);
+//
+//		//从右向左找等于小于基准的元素
+//		while (arr[j--] > pivot);
+//
+//		if (i < j)
+//		{
+//			Swap(&arr[i], &arr[j]);
+//		}
+//		else
+//		{
+//			break;
+//		}
+//	}
+//
+//	//将基准放到正确的位置
+//	Swap(&arr[i], &arr[right - 1]);
+//	return i;
+//}
 //快排
 void QQQquickSort(int *arr,int left,int right)
 {
@@ -539,6 +539,72 @@ void mergeSort(int* arr, int n)
 	}
 
 	_mergeSort(arr, temp, 0, n - 1);
+	free(temp);
+	temp = NULL;
+}
+//非递归实现归并排序
+
+void _mergeSortN(int* arr, int* temp, int begin, int end)
+{
+	int size = sizeof(arr) / sizeof(arr[0]);
+	int gap = 1;
+
+	while (gap < size)
+	{
+		for (int i = 0; i < size; i += 2 * gap)
+		{
+			int begin1 = i, end1 = i + gap - 1;
+			int begin2 = i + gap, end2 = i + 2 * gap - 1;
+
+			while (begin1 <= end1 && begin2 <= end2)
+			{
+				int cut = i;
+				//考虑越界问题
+				if (begin2 >= size)
+				{
+					break;
+				}
+
+				//begin2没有越界，但是end2越界了
+				if (end2 >= size)
+				{
+					end2 = size - 1;
+				}
+
+				if (arr[begin1] < arr[begin2])
+				{
+					temp[cut++] = arr[begin1++];
+				}
+				else
+				{
+					temp[cut++] = arr[begin2++];
+				}
+
+				if (begin1 <= end1)
+				{
+					temp[cut++] = arr[begin1++];
+				}
+
+				if (begin2 <= end2)
+				{
+					temp[cut++] = arr[begin2++];
+				}
+			}
+			memcopy(arr + i, sizeof(int) * (end2 - i + 1));
+		}
+		gap = 2 * gap;
+	}
+}
+
+void mergeSortN(int* arr, int n)
+{
+	int* temp = (int*)malloc(sizeof(int) * n);
+	if (temp == NULL)
+	{
+		printf("fail!");
+		return;
+	}
+	_mergeSortN(arr, temp, 0, n - 1);
 	free(temp);
 	temp = NULL;
 }
