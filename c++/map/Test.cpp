@@ -20,7 +20,12 @@ struct AVLTreeNode
 		, _bf(0)
 	{}
 };
-
+template<class K,class V>
+ostream& operator<<(ostream& os, const pair<K, V>& kv)
+{
+	os << kv.first << " " << kv.second << " ";
+	return os;
+}
 template<class K, class V>
 class AVLTree
 {
@@ -93,6 +98,14 @@ public:
 			else if (parent->_bf == 2 || parent->_bf == -2)
 			{
 				//不更新了，旋转处理
+				if (parent->_bf == -2 && cur->_bf == 1)
+				{
+					RotateL(parent);
+				}
+				else if (parent->_bf == 2 && cur->_bf == -1)
+				{
+					RotateR(parent);
+				}
 				break;
 			}
 			else
@@ -112,7 +125,7 @@ public:
 		//除了要修改孩子的指针之外，还要修改父亲的 
 		if (subLR)
 		{
-			subLR->_parent = parent;.
+			subLR->_parent = parent;
 		}
 		Node* pParent = parent->_parent;
 		subL->_right = parent;
@@ -182,6 +195,122 @@ public:
 
 		parent->_bf = subR->_bf = 0;
 	}
+	void _InOrder(Node* root)
+	{
+		if (root == nullptr)
+		{
+			return;
+		}
+		cout << root->_kv << " ";
+		_InOrder(root->_left);
+		_InOrder(root->_right);
+	}
+	void InOrder()
+	{
+		_InOrder(_root);
+		cout << endl;
+	}
+
+	void RotateLR(Node* parent)
+	{
+		Node* subL = parent->_left;
+		Node* subLR = subL->_right;
+
+		int bf = subLR->_bf;
+
+		RotateL(parent->_left);
+		RotateR(parent);
+
+		if (bf == 0)
+		{
+			subL->_bf = 0;
+			subLR->_bf = 0;
+			parent->_bf = 0;
+		}
+		else if (bf == -1)
+		{
+			subL->_bf = 0;
+			subLR->_bf = 0;
+			parent->_bf = 1;
+		}
+		else if (bf == 1)
+		{
+			subL->_bf = -1;
+			subLR->_bf = 0;
+			parent->_bf = 0;
+		}
+		else
+		{
+			assert(false);
+		}
+	}
+
+	void RotateRL(Node* parent)
+	{
+		Node* subR = parent->_right;
+		Node* subRL = subR->_left;
+		int bf = subRL->_bf;
+		RotateR(parent->_right);
+		RotateL(parent);
+		if (bf == 0)
+		{
+			subR->_bf = 0;
+			subRL->_bf = 0;
+			parent->_bf = 0;
+		}
+		else if (bf == 1)
+		{
+			subR->_bf = 0;
+			subRL->_bf = 0;
+			parent->_bf = -1;
+		}
+		else if (bf == -1)
+		{
+			subR->_bf = 1;
+			subRL->_bf = 0;
+			parent->_bf = 0;
+		}
+		else
+		{
+			assert(false);
+		}
+	}
+
+	Node* Find(const K& key)
+	{	
+		Node* cur = _root;
+
+		while (cur)
+		{
+			if (cur->_kv.first < key)
+			{
+				cur = cur->_right;
+			}
+			else if (cur->_kv.first > key)
+			{
+				cur = cur->_left;
+			}
+			else
+			{
+				return cur;
+			}
+		}
+
+		return nullptr;
+	}
 private:
 	Node* _root = nullptr;
 };
+
+int main()
+{
+	AVLTree<int,int>tree;
+	int a[] = { 1,6,10};
+	for (auto e : a)
+	{
+		tree.Insert({ e,e });
+	}
+	tree.InOrder();
+
+	return 0;
+}
