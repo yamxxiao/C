@@ -285,4 +285,6 @@ public:
 private:
 	Node* _root = nullptr;
 };
+//实现复用红黑树的框架，并支持insert
+
 

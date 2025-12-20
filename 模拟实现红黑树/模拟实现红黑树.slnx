@@ -1,0 +1,7 @@
+<Solution>
+  <Configurations>
+    <Platform Name="x64" />
+    <Platform Name="x86" />
+  </Configurations>
+  <Project Path="模拟实现红黑树/模拟实现红黑树.vcxproj" />
+</Solution>
