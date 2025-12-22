@@ -3,5 +3,5 @@
     <Platform Name="x64" />
     <Platform Name="x86" />
   </Configurations>
-  <Project Path="模拟实现红黑树/模拟实现红黑树.vcxproj" Id="81d718a5-a8b7-4054-96e9-5b25a696d580" />
+  <Project Path="Hash/Hash.vcxproj" Id="d118316a-1537-4a9b-bd3a-7cb62386cd01" />
 </Solution>
