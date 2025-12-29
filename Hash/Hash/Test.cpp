@@ -35,5 +35,10 @@ int main()
 	{
 		hash.Insert({ e,e });
 	}
+
+	/*int a = 8;
+	int b = 9;
+	int result = a ^ b;
+	cout << "a^b=" << result << endl;*/
 	return 0;
 }
