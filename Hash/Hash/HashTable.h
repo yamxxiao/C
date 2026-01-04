@@ -112,7 +112,20 @@ public:
 			return false;
 		}
 	}
+	void Print();
 };
+template<class K,class V,class Hash>
+void HashTable<K,V,Hash>::Print()
+{
+    for (size_t i = 0; i < _tables.size(); ++i)
+    {
+        if (_tables[i]._state == EXIST)
+        {
+            cout << "[" << _tables[i]._kv.first << ", " << _tables[i]._kv.second << "] ";
+        }
+    }
+    cout << endl;
+}
 //key不能取模的问题
 //当key是string / Date等类型时，key不能取模，那么我们需要给HashTable增加⼀个仿函数，这个仿函
 //数⽀持把key转换成⼀个可以取模的整形，如果key可以转换为整形并且不容易冲突，那么这个仿函数
@@ -201,7 +214,7 @@ namespace Hash_bucket
 			if (_n == _tables.size())
 			{
 				vector<Node*> newtables(__stl_next_prime(_tables.size() + 1), nullptr);
-				for (size_t i = 0, i < _tables.size(); i++)//遍历旧表
+				for (size_t i = 0; i < _tables.size(); i++)//遍历旧表
 				{
 					Node* cur = _tables[i];
 					while (cur)
@@ -210,16 +223,15 @@ namespace Hash_bucket
 						//旧表中的节点，挪动新表重新映射的位置
 						size_t hashi = hs(cur->_kv.first) % newtables.size();
 						//从头插到新表
-						cur->_next = new_table[hashi];
+						cur->_next = newtables[hashi];
 						newtables[hashi] = cur;
 
 						cur = next;
 					}
-					_tables.[i] = nullptr;//让旧表被挪动的位置的指针为空
+					_tables[i] = nullptr;//让旧表被挪动的位置的指针为空
 				}
 				_tables.swap(newtables);
 			}
-
 			//头插
 			Node* newnode = new Node(kv);
 			newnode->_next = _tables[hashi];
@@ -227,9 +239,25 @@ namespace Hash_bucket
 			++_n;
 			return true;
 		}
+		void Print();
 	private:
 		vector<Node*> _tables;//指针数组
-		size_t _n = 0;	//记录表中的储存数据
+		size_t _n = 0;
+		//记录表中的储存数据
 	};
-
+	template<class K, class V, class Hash>
+	void HashTable<K, V, Hash>::Print()
+	{
+		for (size_t i = 0; i < _tables.size(); ++i)
+		{
+			Node* cur = _tables[i];
+			cout << "Bucket[" << i << "]: ";
+			while (cur)
+			{
+				cout << "[" << cur->_kv.first << ", " << cur->_kv.second << "] -> ";
+				cur = cur->_next;
+			}
+			cout << "nullptr" << endl;
+		}
+	}
 }
