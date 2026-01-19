@@ -240,6 +240,68 @@ namespace Hash_bucket
 			return true;
 		}
 		void Print();
+
+		Node* Find(const K& key)
+		{
+			Hash hs;
+			size_t hashi = hs(key) & _tables.size();
+			Node* cur = _tables[hashi];
+			while (cur)
+			{
+				if (cur->_kv == key)
+				{
+					return cur;
+				}
+				cur = cur->_next;
+			}
+			return nullptr;
+		}
+
+		bool Erse(const K& key)
+		{
+			Hash hs;
+			size_t hashi = hs(key) % _tables.size();
+			Node* cur = _tables[hashi];
+			Node* prev = nullptr;
+			while (cur)
+			{
+				//判断一下cur所处的位置
+				
+				if (cur->_kv.first == key)
+				{//头部
+					if (prev == nullptr)
+					{
+						_tables[hashi] = cur->_next;
+					}
+					else
+					{
+						//中间
+						prev->_next = cur->_next;
+					}
+
+					delete cur;
+					--_n;
+					return true;
+				}
+				prev = cur;
+				cur = cur->_next;
+			}
+			return false;
+		}
+		~HashTable()
+		{
+			for (size_t i = 0; i < _tables.size(); i++)
+			{
+				Node* cur = _tables[i];
+				while (cur)
+				{
+					Node* next = cur->_next;
+					delete cur;
+					cur = next;
+				}
+				_tables[i] = nullptr;
+			}
+		}
 	private:
 		vector<Node*> _tables;//指针数组
 		size_t _n = 0;
